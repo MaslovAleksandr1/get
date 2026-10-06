@@ -12,5 +12,5 @@ while True:
     time.sleep(1.2)
 
     duty += 1.0
-    if duty > 100.0:
+    if duty > 10.0:
         duty = 0.0
