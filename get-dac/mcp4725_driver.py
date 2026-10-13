@@ -21,12 +21,16 @@ class MCP4725:
 
     def set_number(self, number):
         if not isinstance(number, int):
-            print("На вход ЦАП можно подавать тольео целые числа")
+            if self.verbose:
+                print("На вход ЦАП можно подавать тольео целые числа")
             return
         if not(0 <= number <= 4095):
-            print("Число выходит за разрядность MCP4725 (12 бит)")
+            if self.verbose:
+                print("Число выходит за разрядность MCP4725 (12 бит)")
             return
 
+        self.number = number
+        
         first_byte = self.wm | self.pds | (number >> 8)
         second_byte = number & 0xFF
         self.bus.write_byte_data(self.address, first_byte, second_byte)
@@ -37,10 +41,11 @@ class MCP4725:
 
     def set_voltage(self, voltage):
         if not (0 <= voltage <= self.dynamic_range):
-            print(f"Напряжение должно быть в диапазоне от 0 до {self.dynamic_range} B")
+            print(f"Напряжение должно быть в диапазоне " f"от 0 до {self.dynamic_range} B")
             return
         
         self.voltage = voltage
+
         number = int((voltage / self.dynamic_range) * 4095)
         number = max(0, min(4095, number))
 
